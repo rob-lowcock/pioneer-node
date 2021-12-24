@@ -1,6 +1,7 @@
 var express = require('express');
 const { Client } = require('pg');
 var router = express.Router();
+const socketapi = require("../socketapi");
 
 const asyncMiddleware = fn =>
   (req, res, next) => {
@@ -39,11 +40,15 @@ router.post('/', asyncMiddleware(async function(req, res, next) {
   var output = dbCall.rows;
   await client.end();
 
-  res.json({
+  outputObj = {
     id: output[0].id,
     title: req.body.title,
-    column: req.body.column,
-  });
+    column: parseInt(req.body.column, 10),
+  }
+
+  socketapi.io.emit("newCard", outputObj)
+
+  res.json(outputObj);
 }));
 
 module.exports = router;

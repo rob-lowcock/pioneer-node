@@ -29,6 +29,11 @@ router.get('/:cardId', asyncMiddleware(async function(req, res, next) {
   var output = dbCall.rows[0];
   await client.end();
 
+  if (dbCall.rowCount == 0) {
+    res.status(404).send("Card not found");
+    return
+  }
+
   res.json(output);
 }));
 
@@ -47,6 +52,26 @@ router.post('/', asyncMiddleware(async function(req, res, next) {
   }
 
   socketapi.io.emit("newCard", outputObj)
+
+  res.json(outputObj);
+}));
+
+router.put('/:cardId', asyncMiddleware(async function(req, res, next) {
+  const client = new Client();
+  await client.connect();
+
+  const dbCall = await client.query('UPDATE retrocards SET title=$1, col=$2, updated=NOW(), archived=$3 WHERE id=$4', [req.body.title, req.body.column, req.body.archived, req.params.cardId]);
+  var output = dbCall.rows;
+  await client.end();
+
+  outputObj = {
+    id: req.params.cardId,
+    title: req.body.title,
+    column: parseInt(req.body.column, 10),
+    archived: req.body.archived,
+  }
+
+  socketapi.io.emit("updateCard", outputObj)
 
   res.json(outputObj);
 }));

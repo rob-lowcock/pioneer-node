@@ -14,7 +14,7 @@ router.get('/', asyncMiddleware(async function(req, res, next) {
   const client = new Client();
   await client.connect();
 
-  const dbCall = await client.query('SELECT id, title, col as column, archived FROM retrocards WHERE archived=FALSE');
+  const dbCall = await client.query('SELECT id, title, col as column, archived, votes FROM retrocards WHERE archived=FALSE');
   var output = dbCall.rows;
   await client.end();
 
@@ -25,7 +25,7 @@ router.get('/:cardId', asyncMiddleware(async function(req, res, next) {
   const client = new Client();
   await client.connect();
 
-  const dbCall = await client.query('SELECT id, title, col as column, archived FROM retrocards WHERE id=$1', [req.params.cardId]);
+  const dbCall = await client.query('SELECT id, title, col as column, archived, votes FROM retrocards WHERE id=$1', [req.params.cardId]);
   var output = dbCall.rows[0];
   await client.end();
 
@@ -50,6 +50,7 @@ router.post('/', asyncMiddleware(async function(req, res, next) {
     title: req.body.title,
     column: parseInt(req.body.column, 10),
     archived: false,
+    votes: 0  // Potential for race condition here
   }
 
   socketapi.io.emit("newCard", outputObj)
@@ -70,6 +71,40 @@ router.put('/:cardId', asyncMiddleware(async function(req, res, next) {
     title: req.body.title,
     column: parseInt(req.body.column, 10),
     archived: req.body.archived,
+  }
+
+  socketapi.io.emit("updateCard", outputObj)
+
+  res.json(outputObj);
+}));
+
+router.post('/:cardId/votes', asyncMiddleware(async function(req, res, next) {
+  const client = new Client();
+  await client.connect();
+  const dbCall = await client.query('UPDATE retrocards SET votes=votes+1 WHERE id=$1 RETURNING (votes)', [req.params.cardId]);
+  var output = dbCall.rows;
+  await client.end();
+
+  outputObj = {
+    id: req.params.cardId,
+    votes: output[0].votes,
+  }
+  
+  socketapi.io.emit("updateCard", outputObj)
+
+  res.json(outputObj);
+}));
+
+router.delete('/:cardId/votes', asyncMiddleware(async function(req, res, next) {
+  const client = new Client();
+  await client.connect();
+  const dbCall = await client.query('UPDATE retrocards SET votes=votes-1 WHERE id=$1 RETURNING (votes)', [req.params.cardId]);
+  var output = dbCall.rows;
+  await client.end();
+
+  outputObj = {
+    id: req.params.cardId,
+    votes: output[0].votes,
   }
 
   socketapi.io.emit("updateCard", outputObj)

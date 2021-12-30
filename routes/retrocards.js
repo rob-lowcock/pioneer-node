@@ -112,4 +112,20 @@ router.delete('/:cardId/votes', asyncMiddleware(async function(req, res, next) {
   res.json(outputObj);
 }));
 
+router.patch('/', asyncMiddleware(async function(req, res, next) {
+
+  if (req.body.operation == "archive") {
+    const client = new Client();
+    await client.connect();
+
+    const dbCall = await client.query('UPDATE retrocards SET archived=TRUE WHERE archived=FALSE');
+    var output = dbCall.rows;
+    await client.end();
+  }
+
+  socketapi.io.emit("clearBoard", true)
+
+  res.json(output);
+}))
+
 module.exports = router;

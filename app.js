@@ -17,13 +17,16 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-var corsOptions = {
-  origin: 'http://localhost:3000',
+if (process.env.NODE_ENV === 'development') {
+  var corsOptions = {
+    origin: 'http://localhost:3000',
+  }
+  
+  app.use(cors(corsOptions));
+  app.use(logger('dev'));
+} else {
+  app.use(auth);
 }
-
-app.use(auth);
-app.use(cors(corsOptions));
-app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

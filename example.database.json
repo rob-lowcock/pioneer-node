@@ -1,0 +1,21 @@
+{
+    "dev": {
+        "driver": "pg",
+        "host": "localhost",
+        "database": "pioneer"
+    },
+    "prod": {
+        "driver": "pg",
+        "host": "localhost",
+        "user": "postgres",
+        "port": 5432,
+        "password": "PROD_DB_PASSWORD",
+        "database": "pioneer",
+        "tunnel": {
+            "localPort": 33333,
+            "host": "your.prod.server",
+            "username": "root",
+            "privateKeyPath": "/Users/rob/.ssh/id_rsa"
+        }
+    }
+}

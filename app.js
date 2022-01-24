@@ -17,7 +17,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-if (process.env.NODE_ENV === 'development') {
+if (app.get('env') === 'development') {
   var corsOptions = {
     origin: 'http://localhost:3000',
   }

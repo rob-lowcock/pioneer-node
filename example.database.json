@@ -15,7 +15,7 @@
             "localPort": 33333,
             "host": "your.prod.server",
             "username": "root",
-            "privateKeyPath": "/Users/rob/.ssh/id_rsa"
+            "privateKeyPath": "/Users/youruser/.ssh/id_rsa"
         }
     }
 }

@@ -4,7 +4,7 @@ This is the API server and websocket server for the Pioneer retro board. The cor
 
 ## 🧑‍💻 Development
 1. Download the repo and run `npm install`
-2. Duplicate example.env and rename it to `.env`. The standard Postgres environment variables (`PGHOST`, `PGDATABSE`, `PGUSER`, `PGPASSWORD` etc.) can be used to set the database credentials.
+2. Duplicate example.env and rename it to `.env`. The standard Postgres environment variables (`PGHOST`, `PGDATABASE`, `PGUSER`, `PGPASSWORD` etc.) can be used to set the database credentials.
 3. Duplicate example.database.json and rename it to `database.json`, and amend it to set your development and production database credentials. This file is used to run the database migrations, so *DO NOT* deploy this file!
 4. Run `npm run migrate -- up -e dev` to run the database migrations.
 5. Run `npm run start` to start the development server

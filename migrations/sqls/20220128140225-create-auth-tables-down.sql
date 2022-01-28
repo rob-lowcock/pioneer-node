@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS auth_clients, auth_codes, auth_tokens, users CASCADE;

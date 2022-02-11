@@ -17,4 +17,5 @@ Deployment is a bit more complicated as there are a few ways to do it. You might
 3. On your server, set up a `.env` file for the production environment.
 4. Ensure your server has an environment variable called `NODE_ENV` set to `production`.
 5. Upload your built copy of [pioneer-frontend](https://github.com/rob-lowcock/pioneer-frontend) (i.e. the contents of the `dist` folder) to the public directory on your server.
-6. On your server, run `npm run start` to start the production server.
+6. Set NODE_ENV to `production` on the server. If you're using something like [PM2](https://pm2.keymetrics.io/) to run it you can use a configuration file to set this. This will enable password protection on the server.
+7. On your server, run `npm run start` to start the production server. You can also use `./bin/www` as the executable if you use something like PM2. 
